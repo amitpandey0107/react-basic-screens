@@ -1,0 +1,161 @@
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    font-family: 'Recursive', sans-serif !important;
+    background-color: #293542 ;
+    background-color: #131313 ;
+}
+h, h2, h3, h4, h5, h6,
+div, p, a, span, i, small, sub, 
+section, aside, strong, em, label {
+    /* color: #525252; */
+    color: #bfbfbf;
+    letter-spacing: 1px;
+}
+a{
+    color: #bfbfbf;
+    text-decoration: none;
+}
+
+/* Login */
+.loginwrap {
+    width: 400px;
+    box-shadow: 0px 0px 11px 3px rgba(0,0,0,0.5);
+    padding: 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 25px;
+}
+.loginwrap h1 {
+    font-size: 36px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+}
+.loginwrap .formwrap .formfield{
+    margin-bottom: 20px;
+}
+.loginwrap .formcontrol {
+    height: 40px;
+    width: 95%;
+    border: 0;
+    border: none;
+    padding: 5px 15px;
+    background: #363636;
+    color: #bfbfbf;
+    font-size: 18px;
+    outline: none;
+    border-radius: 30px;
+}
+.loginwrap .formcontrol:focus {
+    outline: none;
+}
+.loginwrap .formwrap .formfield label {
+    margin-bottom: 10px;
+    font-size: 16px;
+    display: block;
+    font-weight: 400;
+}
+.loginbutton{    
+    outline: none;
+    background-color: #30403F;
+    color: #bfbfbf;
+    border: none;
+    text-align: center;
+    padding: 8px 50px;
+    height: 45px;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 1px;
+    border-radius: 30px;
+    font-family: 'Recursive', sans-serif !important;
+    font-size: 18px;
+}
+.checkwrap {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+}
+.checkwrap input[type="checkbox"] {
+    position: relative;
+    transform: scale(1.5);
+    opacity: 0;
+    left: 7px;
+    z-index: 9;
+}
+.checkwrap .checklbl {
+    display: inline-block;
+    background: #363636;
+    height: 22px;
+    width: 22px;
+    border-radius: 5px;
+    position: absolute;
+    left: 3px;
+    top: -2px;
+}
+.checkwrap input[type="checkbox"]:checked + .checklbl{}
+.checkwrap input[type="checkbox"]:checked + .checklbl:after{
+    content: '';
+    height: 6px;
+    width: 13px;
+    border-top: 2px solid #fff;
+    border-right: 2px solid #fff;
+    position: absolute;
+    transform: rotate(127deg);
+    top: 5px;
+    left: 3px;
+}
+
+.formfield .checktxt {
+    width: 87%;
+    position: relative;
+    display: inline-block;
+    font-size: 12px;
+    top: 13px;
+    left: 11px;
+    line-height: 18px;
+}
+.formfield .checktxt a {
+    text-decoration: underline;
+    color: #777;
+}
+.btnwrp {
+    margin-top: 40px;
+}
+.btnwrplogin {
+    margin-top: 25px;
+}
+.registerwrap h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+.registerwrap .formwrap .formfield {
+    margin-bottom: 15px;
+}
+.registerwrap {
+    padding: 20px 30px;
+}
+.forgetpass {
+    text-align: right;
+    display: block;
+    font-size: 13px;
+    color: #777;
+    text-decoration: underline;
+    position: relative;
+    top: 8px;
+}
+.supporttxt {
+    font-size: 14px;
+    text-align: center;
+    margin-top: 15px;
+}
+.supporttxt a{
+    color: #777;
+    text-decoration: underline;
+}
+.mb0 {
+    margin-bottom: 0 !important;
+}
