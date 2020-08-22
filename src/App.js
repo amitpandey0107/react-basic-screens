@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, Component } from 'react';
+import history from './App/history';
+import { BrowserRouter as Router } from 'react-router-dom';
+import Routes from './App/AppRoutes/Routes';
+import { Provider } from 'react-redux';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { authState: 'loading' };
+  }
+  render() {
+    const childProps = true;
+    return (
+      <React.Fragment>
+        <Router history={history}>
+          <Suspense fallback={<div className="loading"></div>}>
+            <Routes childProps={childProps} />
+          </Suspense>
+        </Router>
+      </React.Fragment>
+    );
+  }
 }
 
 export default App;

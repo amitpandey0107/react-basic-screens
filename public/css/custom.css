@@ -159,3 +159,9 @@ a{
 .mb0 {
     margin-bottom: 0 !important;
 }
+.help-block {
+    position: relative;
+}
+.error-block {
+    color: red;
+}

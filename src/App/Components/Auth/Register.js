@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {Link} from 'react-router-dom'
 
 class Register extends Component {
     constructor(props) {
@@ -81,7 +82,7 @@ class Register extends Component {
 
                         <div className="formfield mb0">
                             <div className="supporttxt">
-                                Already have an account? <a href="">Login here</a>.
+                                Already have an account? <Link to="/">Login here</Link>.
                             </div>
                         </div>
 

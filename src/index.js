@@ -1,18 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import './index.css';
-// import App from './App';
-import Login from './App/Components/Auth/Login';
-import Register from './App/Components/Auth/Register';
-import ForgetPassword from './App/Components/Auth/ForgetPassword';
-import ResetPassword from './App/Components/Auth/ResetPassword';
+import store from './App/Store/Store'
+import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-// import { Provider } from 'react-redux';
+import App from './App';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Login />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 );
 

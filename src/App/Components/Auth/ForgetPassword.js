@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import {Link} from 'react-router-dom'
 
 class ForgetPassword extends Component {
     constructor(props) {
@@ -36,7 +37,7 @@ class ForgetPassword extends Component {
 
                         <div className="formfield mb0">
                             <div className="supporttxt">
-                                Go back <a href="">Login</a>.
+                                Go back <Link to="/">Login</Link>.
                             </div>
                         </div>
 
