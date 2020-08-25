@@ -1,14 +1,21 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import ReactNotification, { store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
 import { connect } from 'react-redux';
 import { LOADING, SUCCESS, ERROR } from '../../Constants/Misc';
-import { LoginAction } from '../../Actions/LoginAction';
+import { LoginAction, auth_action } from '../../Actions/LoginAction';
+import { ResetAction } from '../../Actions/ResetAction';
 
 class Login extends Component {
     constructor(props) {
         super(props)
+
+        const token = localStorage.getItem('username');
+        let loggedIn = true;
+        if (token == null) {
+            loggedIn = false;
+        }
 
         this.state = {
             username: '',
@@ -17,6 +24,7 @@ class Login extends Component {
             hideShowpass: false,
             isLoading: false,
             isLoggedIn: false,
+            loggedIn
         }
     }
 
@@ -51,18 +59,45 @@ class Login extends Component {
         });
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.LoginReducer.status === LOADING) {
+            return { isLodaing: true }
+        } else if (props.LoginReducer.status === SUCCESS) {
+            props.auth_action();
+            return { isLodaing: false };
+        } else if (props.LoginReducer.status === ERROR) {
+            return { isLodaing: false };
+        }  else if (props.ResetReducer.status === ERROR) {
+            return { isLodaing: true };
+        } else if (props.ResetReducer.status === SUCCESS) {
+            return { isLodaing: false, };
+        } else if (props.ResetReducer.status === ERROR) {
+            return { isLodaing: false };
+        }
+        return null;
+    }
+
+
     componentDidUpdate(prevProps, prevState) {
         console.log(this.props);
         if (this.props.LoginReducer.status === LOADING) {
 
         } else if (this.props.LoginReducer.status === SUCCESS) {
             this.notifyMe('Welcome', 'Login Successful', 'success');
+            setTimeout(() => {
+                this.props.history.push('/home')
+            }, 500);
+            this.props.ResetAction()
         }  else if (this.props.LoginReducer.status === ERROR) {
             this.notifyMe('Opps', 'Login failed', 'danger');
+            this.props.ResetAction()
         }
     }
 
     render() {
+        if (this.state.loggedIn === true) {
+            return <Redirect to="/home" />
+        }
         const { username, password, submitted } = this.state;
         return (
             <>
@@ -133,7 +168,8 @@ class Login extends Component {
 const mapStateToProps = state => {
     return {
         LoginReducer: state.LoginReducer,       
+        ResetReducer: state.ResetReducer,       
     };
 };
 
-export default connect(mapStateToProps, {LoginAction})(Login);
+export default connect(mapStateToProps, {LoginAction,auth_action, ResetAction})(Login);
