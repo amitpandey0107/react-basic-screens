@@ -11,7 +11,7 @@ class Login extends Component {
     constructor(props) {
         super(props)
 
-        const token = localStorage.getItem('username');
+        const token = localStorage.getItem('UserId');
         let loggedIn = true;
         if (token == null) {
             loggedIn = false;
@@ -40,7 +40,7 @@ class Login extends Component {
         this.setState({ submitted: true });
         const { username, password } = this.state;
         if (username && password) {
-           await this.props.LoginAction(username, password);
+            await this.props.LoginAction(username, password);
         }
     }
     notifyMe = (title, message, type) => {
@@ -61,36 +61,47 @@ class Login extends Component {
 
     static getDerivedStateFromProps(props, state) {
         if (props.LoginReducer.status === LOADING) {
-            return { isLodaing: true }
+            return { isLoading: true }
         } else if (props.LoginReducer.status === SUCCESS) {
-            props.auth_action();
-            return { isLodaing: false };
+            if (props.LoginReducer.value.status_code === 500) {
+                return { status: "login failed", isLoading: false }
+            } else {
+                localStorage.setItem('Token', props.LoginReducer.value.data.data.token);
+                localStorage.setItem('UserId', "" + props.LoginReducer.value.data.data.id);
+                localStorage.setItem('role', props.LoginReducer.value.data.data.role);
+                props.auth_action();
+                return { status: "success", isLoading: false }
+            }
         } else if (props.LoginReducer.status === ERROR) {
-            return { isLodaing: false };
-        }  else if (props.ResetReducer.status === ERROR) {
-            return { isLodaing: true };
-        } else if (props.ResetReducer.status === SUCCESS) {
-            return { isLodaing: false, };
+            return { isLoading: false };
         } else if (props.ResetReducer.status === ERROR) {
-            return { isLodaing: false };
+            return { isLoading: true };
+        } else if (props.ResetReducer.status === SUCCESS) {
+            return { isLoading: false, };
+        } else if (props.ResetReducer.status === ERROR) {
+            return { isLoading: false };
         }
         return null;
     }
 
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props);
         if (this.props.LoginReducer.status === LOADING) {
 
         } else if (this.props.LoginReducer.status === SUCCESS) {
-            this.notifyMe('Welcome', 'Login Successful', 'success');
-            setTimeout(() => {
-                this.props.history.push('/home')
-            }, 500);
-            this.props.ResetAction()
-        }  else if (this.props.LoginReducer.status === ERROR) {
+            this.props.auth_action();
+            this.notifyMe('Welcome', 'Login Successful', 'success');            
+        } else if (this.props.LoginReducer.status === ERROR) {
             this.notifyMe('Opps', 'Login failed', 'danger');
             this.props.ResetAction()
+        } else if (this.props.AuthReducer.status === SUCCESS) {
+            if (this.state.status === 'success') {
+                this.setState({
+                    loggedIn: true
+                })
+                this.props.history.push('/home')
+            } else if (this.state.status === 'error') {
+            }
         }
     }
 
@@ -119,9 +130,9 @@ class Login extends Component {
                                     onChange={(event) => this.handleChange(event)}
                                 />
                                 <div className="help-block">
-                                {submitted && !username &&
-                                    <div className="error-block">Username is required</div>
-                                }
+                                    {submitted && !username &&
+                                        <div className="error-block">Username is required</div>
+                                    }
                                 </div>
                             </div>
 
@@ -137,11 +148,11 @@ class Login extends Component {
                                     onChange={(event) => this.handleChange(event)}
                                 />
                                 <div className="help-block">
-                                {submitted && !password &&
-                                    <div className="error-block">Password is required</div>
-                                }
+                                    {submitted && !password &&
+                                        <div className="error-block">Password is required</div>
+                                    }
                                 </div>
-                                <Link to="/forget-password" className="forgetpass">Forget Password</Link>
+                                {/* <Link to="/forget-password" className="forgetpass">Forget Password</Link> */}
                             </div>
 
                             <div className="formfield btnwrplogin">
@@ -149,12 +160,19 @@ class Login extends Component {
                                     className="loginbutton"
                                     id="loginbutton"
                                 >Login</button>
+
+                                {this.state.isLoading ?
+                                    <span className="loader">
+                                        <img src={'./img/ajax-loader.gif'} alt="loader" />
+                                    </span>
+                                    : ''}
+
                             </div>
 
                             <div className="formfield mb0">
-                                <div className="supporttxt">
+                                {/* <div className="supporttxt">
                                     Don't have an account? <Link to="/register">Register here</Link>.
-                            </div>
+                            </div> */}
                             </div>
 
                         </form>
@@ -167,9 +185,10 @@ class Login extends Component {
 
 const mapStateToProps = state => {
     return {
-        LoginReducer: state.LoginReducer,       
-        ResetReducer: state.ResetReducer,       
+        LoginReducer: state.LoginReducer,
+        ResetReducer: state.ResetReducer,
+        AuthReducer: state.AuthReducer,
     };
 };
 
-export default connect(mapStateToProps, {LoginAction,auth_action, ResetAction})(Login);
+export default connect(mapStateToProps, { LoginAction, auth_action, ResetAction })(Login);

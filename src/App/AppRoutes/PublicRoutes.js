@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch } from "react-router-dom";
 import history from '../history';
-import { withRouter } from 'react-router-dom';
 
 const Login = React.lazy(() => import("../Components/Auth/Login"));
 const Register = React.lazy(() => import("../Components/Auth/Register"));

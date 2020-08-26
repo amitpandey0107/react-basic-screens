@@ -37,6 +37,12 @@ a{
 }
 .loginwrap .formwrap .formfield{
     margin-bottom: 20px;
+    position: relative;
+}
+.loginwrap  .loader {
+    position: absolute;
+    top: 9px;
+    left: 45%;
 }
 .loginwrap .formcontrol {
     height: 40px;
@@ -246,6 +252,10 @@ a{
     margin-bottom: 20px;
     font-size: 20px;
 }
+.maincontent h1 {
+    margin-bottom: 20px;
+    font-size: 32px;
+}
 .formwrapper {
     padding: 0;
     box-shadow: none;
@@ -253,4 +263,27 @@ a{
 }
 .react-datepicker-wrapper {
     width: 100%;
+}
+.rbc-off-range-bg {
+    background: #333 !important;
+}
+.rbc-today {
+    background-color: #008 !important;
+}
+.rbc-event{
+    background-color: #008008 !important;
+}
+.rbc-toolbar button {
+    color: #bfbfbf !important;
+}
+.rbc-toolbar button:hover {
+    color: #373a3c !important;
+}
+
+.loadingEvent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
 }

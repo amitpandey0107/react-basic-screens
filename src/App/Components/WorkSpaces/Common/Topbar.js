@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Link, Redirect } from "react-router-dom";
  class Topbar extends Component {
     constructor(props) {
         super(props)
 
-        const token = localStorage.getItem('username');
+        const token = localStorage.getItem('UserId');
         let loggedIn = true;
         if (token == null) {
             loggedIn = false;
@@ -15,8 +14,9 @@ import { Link, Redirect } from "react-router-dom";
         }
     }
     logout = async () => {
-        localStorage.removeItem('username');
-        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('Token');
+        localStorage.removeItem('UserId');
+        localStorage.removeItem('role');
         this.props.history.push('/')
     }
     render() {

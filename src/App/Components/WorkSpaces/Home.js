@@ -1,7 +1,14 @@
 import React, { Component } from 'react'
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
+import ReactNotification, { store } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import { connect } from 'react-redux';
+import { LOADING, SUCCESS, ERROR } from '../../Constants/Misc';
+import { AddEventAction } from '../../Actions/AddEventAction';
+import { ResetAction } from '../../Actions/ResetAction';
 
 import Topbar from './Common/Topbar';
 import Sidebar from './Common/Sidebar';
@@ -10,7 +17,7 @@ class Home extends Component {
     constructor(props) {
         super(props)
 
-        const token = localStorage.getItem('username');
+        const token = localStorage.getItem('UserId');
         let loggedIn = true;
         if (token == null) {
             loggedIn = false;
@@ -22,21 +29,45 @@ class Home extends Component {
             endDate: '',
             title: '',
             description: '',
+            isLoading:false,
         }
     }
 
-    handleStartDate = date => {
+    notifyMe = (title, message, type) => {
+        store.addNotification({
+            title: title,
+            message: message,
+            type: type,
+            insert: "top",
+            container: "top-right",
+            animationIn: ["animated", "fadeIn"],
+            animationOut: ["animated", "fadeOut"],
+            dismiss: {
+                duration: 5000,
+                onScreen: true
+            }
+        });
+    }
+
+
+    handleStartDate = date => {       
+        var event = new Date(date);
+        let date1 = JSON.stringify(event)
+        date1 = date1.slice(1, 11)
         this.setState({
-            startDate: date,
+            startDate: date1,
         });
     };
 
     handleEndDate = date => {
+        var event = new Date(date);
+        let date1 = JSON.stringify(event)
+        date1 = date1.slice(1, 11)
         this.setState({
-            endDate: date
+            endDate: date1
         });
     };
-    
+
     handleChange = (evt) => {
         evt.preventDefault()
         let targetName = evt.target.name
@@ -49,11 +80,36 @@ class Home extends Component {
         this.setState({ submitted: true });
         const { startDate, endDate, title, description } = this.state;
         if (startDate && endDate && title && description) {
-            // await this.props.LoginAction(username, password);
-            alert('Good to go')
+            await this.props.AddEventAction(title, description, startDate, endDate);
         }
     }
 
+    static getDerivedStateFromProps(props, state) {
+        if (props.AddEventReducer.status === LOADING) {
+            return { isLoading: true }
+        } else if (props.AddEventReducer.status === SUCCESS) {
+            return { isLoading: false };
+        } else if (props.AddEventReducer.status === ERROR) {
+            return { isLoading: false };
+        } else if (props.ResetReducer.status === ERROR) {
+            return { isLoading: true };
+        } else if (props.ResetReducer.status === SUCCESS) {
+            return { isLoading: false, };
+        } else if (props.ResetReducer.status === ERROR) {
+            return { isLoading: false };
+        }
+        return null;
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.AddEventReducer.status === SUCCESS) {
+            this.notifyMe('Welcome', 'Event Added Successful', 'success');
+            this.props.ResetAction()
+        } else if (this.props.AddEventReducer.status === ERROR) {
+            this.notifyMe('Opps', 'Failed to add event', 'danger');
+            this.props.ResetAction()
+        }
+    }
 
     render() {
         const { startDate, endDate, title, description, submitted, loggedIn } = this.state;
@@ -64,7 +120,7 @@ class Home extends Component {
             <div className="main">
                 <Topbar {...this.props} />
                 <Sidebar {...this.props} />
-
+                <ReactNotification />
                 <div className="maincontent">
                     <div className="loginwrap registerwrap formwrapper">
                         <h1 className="title">Add Event</h1>
@@ -74,13 +130,13 @@ class Home extends Component {
                                 <div className="formfield">
                                     <label htmlFor="startdate">Start</label>
                                     <DatePicker
-                                        selected={startDate}
-                                        onChange={(event) => this.handleStartDate(event)}
+                                        value={startDate}
+                                        onChange={this.handleStartDate}
                                         id="startdate"
                                         name="startdate"
                                         className="formcontrol"
                                         autoComplete="startdate"
-                                        dateFormat="d-M-yyyy"
+                                        dateFormat="yyyy-MM-dd"
                                     />
                                     <div className="help-block">
                                         {submitted && !startDate &&
@@ -92,13 +148,13 @@ class Home extends Component {
                                 <div className="formfield">
                                     <label htmlFor="startend">End</label>
                                     <DatePicker
-                                        selected={endDate}
-                                        onChange={(event) => this.handleEndDate(event)}
+                                        value={endDate}
+                                        onChange={this.handleEndDate}
                                         id="endDate"
                                         name="endDate"
                                         className="formcontrol"
                                         autoComplete="endDate"
-                                        dateFormat="d-M-yyyy"
+                                        dateFormat="yyyy-MM-dd"
                                     />
                                     <div className="help-block">
                                         {submitted && !endDate &&
@@ -150,6 +206,11 @@ class Home extends Component {
                                     >
                                         Submit
                                     </button>
+                                    {this.state.isLoading ?
+                                    <span className="loader">
+                                        <img src={'./img/ajax-loader.gif'} alt="loader" />
+                                    </span>
+                                    : ''}
                                 </div>
 
                             </form>
@@ -164,4 +225,11 @@ class Home extends Component {
     }
 }
 
-export default Home
+const mapStateToProps = state => {
+    return {
+        AddEventReducer: state.AddEventReducer,
+        ResetReducer: state.ResetReducer,
+    };
+};
+
+export default connect(mapStateToProps, { AddEventAction, ResetAction })(Home);
